@@ -31,6 +31,7 @@ class Renderer:
 
     def pre_gen_rects(self) -> list[list]:
         size_const: int = min(self.screen_width // self.game.width, self.screen_height // self.game.height)
+
         rect_list = []
 
         for x_val in range((self.screen_width - self.game.width * size_const) // 2, self.screen_width, size_const):

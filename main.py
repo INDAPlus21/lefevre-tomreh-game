@@ -1,6 +1,10 @@
 import pygame
 from modules.game import Game
 from modules.renderer import Renderer
+from modules.agent import Agent
+from modules.player import Player
+from modules.basicBot import BasicBot
+
 
 if __name__ == "__main__":
     pygame.init()
@@ -15,3 +19,4 @@ if __name__ == "__main__":
                 running = False
 
         renderer.draw()
+    

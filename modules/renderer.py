@@ -25,7 +25,7 @@ class Renderer:
 
         pygame.display.flip()
 
-    def pre_gen_rects(self) -> list[list]:
+    def pre_gen_rects(self):
         x_const: int = self.screen_width // self.game.width
         y_const: int = self.screen_height // self.game.height
 

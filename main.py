@@ -5,8 +5,8 @@ from modules.renderer import Renderer
 if __name__ == "__main__":
     pygame.init()
 
-    game = Game(8, 8)
-    renderer = Renderer(game, 256, 256)
+    game = Game(10, 15)
+    renderer = Renderer(game, 1440, 900)
 
     running = True
     while running:

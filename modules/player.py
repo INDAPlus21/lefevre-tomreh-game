@@ -1,26 +1,28 @@
 import pygame
-from modules import Agent
+from modules.agent import Agent
 
 class Player(Agent):
     def __init__(self, id: int):
         self.id = id
     def Output(self, event: pygame.event):
-        keyUp, keyDown, keyLeft, keyRight = 'w', 's', 'a', 'd'
+        keyUp, keyDown, keyLeft, keyRight = pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d
         if id == 1:
-            keyUp, keyDown, keyLeft, keyRight = 'up arrow', 'down arrow', 'left arrow', 'right arrow'
+            keyUp, keyDown, keyLeft, keyRight = pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT
         
-        try:
-            if keyboard.is_pressed(keyUp):
+        if event.type == pygame.KEYDOWN:
+            if event.key == keyUp:
                 print('yield yeets UP')
-                return UP
-            elif keyboard.is_pressed(keyDown):
+                return self._up
+            elif event.key == keyDown:
                 print('yield yeets DOWN')
-                return DOWN
-            elif keyboard.is_pressed(keyLeft):
+                return self._down
+            elif event.key == keyLeft:
                 print('yield yeets LEFT')
-                return LEFT
-            elif keyboard.is_pressed(keyRight):
+                return self._left
+            elif event.key == keyRight:
                 print('yield yeets RIGHT')
-                return RIGHT
-        except:
+                return self._right
+            else:
+                return (0, 0)
+        else:
             return (0, 0)

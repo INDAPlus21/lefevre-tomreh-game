@@ -1,8 +1,8 @@
 class Agent:
-    UP = (0, 1)
-    DOWN = (0, -1)
-    RIGHT = (1, 0)
-    LEFT = (-1, 0)
+    _up = (0, 1)
+    _down = (0, -1)
+    _right = (1, 0)
+    _left = (-1, 0)
     
     def __init__(self):
         pass

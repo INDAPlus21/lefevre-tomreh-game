@@ -1,6 +1,6 @@
 import pygame
 
-from agent import Agent
+from modules.agent import Agent
 
 class Player(Agent):
     def __init__(self, id: int):
@@ -9,8 +9,6 @@ class Player(Agent):
         if id == 1:
             self.key_up, self.key_down, self.key_left, self.key_right = pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT
     def Output(self, event: pygame.event):
-        print('we in output bois')
-
         if event.key == self.key_up:
             print('yield yeets UP')
             return self._up

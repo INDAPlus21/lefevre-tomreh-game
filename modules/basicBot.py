@@ -1,4 +1,4 @@
-from agent import Agent
+from modules.agent import Agent
 
 class BasicBot(Agent):
     def Output(self, state):

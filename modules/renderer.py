@@ -2,11 +2,11 @@ from pygame import display, Rect, draw
 from modules import stylesheet
 
 class Renderer:
-    def __init__(self, w_width, w_height):
+    def __init__(self, w_width, w_height, grid_size):
         self.w_width = w_width
         self.w_height = w_height
         
-        self.rects = self.gen_rects(10)
+        self.rects = self.gen_rects(grid_size)
 
         # Create window
         self.window = display.set_mode((w_width + stylesheet.BORDER_THICKNESS * 2
@@ -39,13 +39,18 @@ class Renderer:
 
         
     def gen_rects(self, size):
-        cell_size = self.w_width // size
+        x, y = size
+        size_x = self.w_width // x
+        size_y = self.w_height // y
+        
+        offset_x = (self.w_width % size_x) / 2
+        offset_y = (self.w_height % size_y) / 2
 
         rows = []
-        for val_y in range(0, self.w_width, cell_size):
+        for val_y in range(0, self.w_height, size_y):
             row = []
-            for val_x in range(0, self.w_width, cell_size):
-                row.append(Rect(val_x, val_y, cell_size, cell_size))
+            for val_x in range(0, self.w_width, size_x):
+                row.append(Rect(val_x + offset_x, val_y + offset_y, size_x, size_y))
             rows.append(row)
 
         return rows

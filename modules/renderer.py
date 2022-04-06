@@ -6,18 +6,27 @@ class Renderer:
         self.w_width = w_width
         self.w_height = w_height
         
+        # Cells
         self.rects = self.gen_rects(grid_size)
-
+        
+        # Auto size grid for different sizes
+        x, y = grid_size
+        cell_size = min(w_width, w_height) // max(x, y)
+        dynamic_border_x = (w_width - (x * cell_size))/2
+        dynamic_border_y = (w_height - (y * cell_size))/2  
+        
         # Create window
-        self.window = display.set_mode((w_width + stylesheet.BORDER_THICKNESS * 2
-                                        ,w_height + stylesheet.BORDER_THICKNESS * 2))
+        self.window = display.set_mode((w_width + stylesheet.BORDER_THICKNESS * 2, 
+                                        w_height + stylesheet.BORDER_THICKNESS * 2))
     
         display.set_caption("PvSnake")
 
-        self.draw_zone = self.window.subsurface((stylesheet.BORDER_THICKNESS, stylesheet.BORDER_THICKNESS
-                                                ,w_width, w_height))
+        # Create subsurface for drawing on
+        self.draw_zone = self.window.subsurface((dynamic_border_x + stylesheet.BORDER_THICKNESS
+                                                 ,dynamic_border_y + stylesheet.BORDER_THICKNESS
+                                                 ,w_width - (dynamic_border_x * 2), w_height - (dynamic_border_y * 2)))
 
-        self.window.fill(stylesheet.BACKGROUND)
+        self.window.fill(stylesheet.BORDER)
 
     def draw(self, grid):
         # Background color

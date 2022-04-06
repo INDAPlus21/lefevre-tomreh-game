@@ -37,8 +37,13 @@ class Renderer:
         for row in grid:
             x = 0
             for cell in row:
-                if cell == 1:
-                    draw.rect(self.draw_zone, stylesheet.CELL1, self.rects[y][x])
+                match cell[0]:
+                    case 1:
+                        draw.rect(self.draw_zone, stylesheet.FOOD, self.rects[y][x])
+                    case 2:
+                        draw.rect(self.draw_zone, stylesheet.SNAKE1, self.rects[y][x])
+                    case 3:
+                        draw.rect(self.draw_zone, stylesheet.SNAKE2, self.rects[y][x])                    
                 x += 1
             y += 1
 

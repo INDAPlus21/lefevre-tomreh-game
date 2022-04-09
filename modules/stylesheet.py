@@ -4,6 +4,7 @@ BORDER = (55, 51, 50)
 SNAKE1 = (52, 105, 191)
 SNAKE2 = (7, 224, 58)
 FOOD = (199, 55, 47)
+FOOD2 = (123, 14, 211)
 
 # Dimensions
 BORDER_THICKNESS = 5

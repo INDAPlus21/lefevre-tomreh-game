@@ -28,7 +28,7 @@ class Renderer:
 
         self.window.fill(stylesheet.BORDER)
 
-    def draw(self, grid):
+    def draw(self, grid, players, foods):
         # Background color
         self.draw_zone.fill(stylesheet.BACKGROUND)
 
@@ -36,6 +36,7 @@ class Renderer:
 
         for row in grid:
             x = 0
+            
             for cell in row:
                 match cell[0]:
                     case 1:
@@ -46,8 +47,24 @@ class Renderer:
                         draw.rect(self.draw_zone, stylesheet.SNAKE2, self.rects[y][x])                    
                 x += 1
             y += 1
+        # draw lines to separate the cells
+        for row in self.rects:
+            for rect in row:
+                draw.rect(self.draw_zone, stylesheet.BORDER, rect, stylesheet.BORDER_THICKNESS)
 
+        # draw players
+        for player in players:
+            #draw.rect(self.draw_zone, stylesheet.SNAKE1, self.rects[player.pos[1]][player.pos[0]])
+            # draw all bodyparts
+            draw.rect(self.draw_zone, stylesheet.SNAKE1, self.rects[player.pos[1]][player.pos[0]])
+                
+        # draw fooods
+        for food in foods:
+            if food.id == 0:
+                draw.rect(self.draw_zone, stylesheet.FOOD, self.rects[food.pos[1]][food.pos[0]])
+            else:
 
+                draw.rect(self.draw_zone, stylesheet.FOOD2, self.rects[food.pos[1]][food.pos[0]])
         # Swap buffers, done last
         display.flip()
 

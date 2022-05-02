@@ -1,68 +1,103 @@
-import pygame
-
-from modules.renderer import Renderer
-from modules.agent import Agent
 from modules.vec import Vec2
-from pygame.time import Clock
+from modules.snake import Snake
+import pygame
+import queue
+from random import randint
+
+DOWN  = Vec2(0, 1)
+UP    = Vec2(0, -1)
+LEFT  = Vec2(-1, 0)
+RIGHT = Vec2(1, 0)
 
 class Game:
-    def __init__(self, grid_size):
-        self.grid_size = grid_size
-        self.grid = [[[0,0]] * grid_size[0] for i in range(grid_size[1])]
-        self.FPS = 1
-        self.clock = Clock()
-
-    def update_grid(self, agent1, agent2):
-        print(agent1.dir, "Dir update")
-        agent1.pos + agent1.dir
-        agent2.pos + agent2.dir
-        
-        print(agent1.pos, "Pos update")
-        
-        self.grid[agent1.pos.y][agent1.pos.x] = [1, 0]
-        self.grid[agent2.pos.y][agent2.pos.x] = [2, 0]
-        x, y = 0, 0
+    def __init__(self, x, y) -> None:
+        self.dimension = Vec2(x, y)
+        self.grid = [[[0, 0] for i in range(x)] for j in range(y)]
+        self.snake = Snake()
+        self.clock = pygame.time.Clock()
+        self.FPS = 3
+        self.running = True
+        self.food_flag = True
+        self.input_buffer = queue.Queue(2)
+        self.prev_input = pygame.K_DOWN
+    
+    def __repr__(self) -> str:
+        out = ""
         for row in self.grid:
+            out += "|"            
             for cell in row:
-                if cell[0] == 0:
-                    pass
-                else:
-                    cell[1] += 1
-                    if cell[0] == 1:
-                        if cell[1] >= agent1.len:
-                            print(x, y)
-                            self.grid[y][x] = [0, 0]
-                    elif cell[0] == 2:
-                        if cell[1] >= agent2.len:
-                            print(x, y)
-                            self.grid[y][x] = [0, 0]
-                x += 1
-            y += 1
-
-    def start(self, agent1, agent2):
-        pygame.init()
-
-        renderer = Renderer(400, 400)
-
-        running = True
-        while running:
+                out += f"{cell[0]},{cell[1]}|"
+            out += "\n"
+            
+        return out
+            
+    def run(self) -> None:
+        self.put_snake(self.snake)
+        print(self)
+        while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
                 elif event.type == pygame.KEYDOWN:
-                    agent1.Output(event)
-                    agent2.Output(event)
+                    if not self.input_buffer.full() and event.key != self.prev_input:
+                        self.input_buffer.put_nowait(event)
+                    self.prev_input = event.key
             
-            self.update_grid(agent1, agent2)
-            renderer.draw(self.grid)
-            self.draw_grid()
-            self.clock.tick(self.FPS)
-            
-        pygame.quit()
-            
-    def draw_grid(self):
-        for i in range(self.grid_size[1]):
-            msg = ""
-            for j in range(self.grid_size[0]):
-                msg += str(self.grid[j][i]) + " "
-            print(msg)
+            if not self.input_buffer.empty():
+                curr_event = self.input_buffer.get()
+                self.snake.event_handle(curr_event)
+                    
+            if not self.snake.update(self.dimension.x, self.dimension.y):
+                self.game_over()
+            else:
+                self.check_col(self.snake)
+                self.put_snake(self.snake)
+                self.clean_grid(self.snake)
+                self.spawn_food()
+                print(self)
+                self.clock.tick(self.FPS)
+        
+    def put_snake(self, snake: Snake) -> None:
+        self.grid[snake.pos.y][snake.pos.x] = [1, 0]
+        
+    def clean_grid(self, snake):
+        self.food_flag = True
+        for row in self.grid:
+            for cell in row:
+                if cell[0] != 1:
+                    if cell[0] == 2:
+                        self.food_flag = False
+                else:
+                    if cell[1] >= snake.len:
+                         cell[0] = 0
+                         cell[1] = 0
+                    else:
+                        cell[1] += 1
+        
+    def check_col(self, snake: Snake) -> None:
+        col_val = self.grid[snake.pos.y][snake.pos.x][0]
+        match col_val:
+            case 1:
+                self.game_over()
+            case 2:
+                snake.add_len()
+    
+    def game_over(self):
+        print("Game over!")
+        self.running = False
+        
+    
+    def spawn_food(self) -> None:
+        if not self.food_flag:
+            return
+        rand_x = randint(0, self.dimension.x - 1)
+        rand_y = randint(0, self.dimension.y - 1)
+                
+        while self.grid[rand_y][rand_x][0] != 0:
+            print("run")
+            rand_x = randint(0, self.dimension.x - 1)
+            rand_y = randint(0, self.dimension.y - 1)
+        
+        point = self.grid[rand_y][rand_x]
+        point[0] = 2
+

@@ -3,9 +3,6 @@ import json
 
 class Renderer:
     def __init__(self, w_width, w_height):
-        # Not really needed
-        self.d = self.load_artistic()
-
         self.w_width = w_width
         self.w_height = w_height
         

@@ -14,13 +14,11 @@ class Game:
     def __init__(self, x, y) -> None:
         self.dimension = Vec2(x, y)
         self.grid = [[[0, 0] for i in range(x)] for j in range(y)]
-        self.snake = Snake()
+        self.snakes = [Snake(0)]
         self.clock = pygame.time.Clock()
         self.FPS = 10
         self.running = True
         self.food_flag = True
-        self.input_buffer = queue.Queue(2)
-        self.prev_input = pygame.K_DOWN
     
     def __repr__(self) -> str:
         out = ""
@@ -33,7 +31,7 @@ class Game:
         return out
             
     def run(self, w, h) -> None:
-        self.put_snake(self.snake)
+        self.put_snakes(self.snakes)
         # print(self)
         renderer = Renderer(w, h, (self.dimension.x, self.dimension.y))
         while self.running:
@@ -41,51 +39,58 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
-                    if not self.input_buffer.full() and event.key != self.prev_input:
-                        self.input_buffer.put_nowait(event)
-                    self.prev_input = event.key
+                    if event.key > 5000:
+                        self.snakes[0].event_handle(event)
+                    else:
+                        self.snakes[1].event_handle(event)
             
-            if not self.input_buffer.empty():
-                curr_event = self.input_buffer.get()
-                self.snake.event_handle(curr_event)
-                    
-            if not self.snake.update(self.dimension.x, self.dimension.y):
-                self.game_over()
-            else:
-                self.check_col(self.snake)
-                self.put_snake(self.snake)
-                self.clean_grid(self.snake)
-                self.spawn_food()
-                renderer.draw(self.grid)
-                self.clock.tick(self.FPS)
+            for snake in self.snakes:
+                if not snake.update(self.dimension.x, self.dimension.y):
+                    self.game_over("Hit wall")
+            
+            self.check_col(self.snakes)
+            self.put_snakes(self.snakes)
+            self.clean_grid(self.snakes)
+            self.spawn_food()
+            renderer.draw(self.grid)
+            self.clock.tick(self.FPS)
         
-    def put_snake(self, snake: Snake) -> None:
-        self.grid[snake.pos.y][snake.pos.x] = [1, 0]
+    def put_snakes(self, snakes) -> None:
+        for snake in snakes:
+            self.grid[snake.pos.y][snake.pos.x] = [snake.id, 0]
         
-    def clean_grid(self, snake):
+    def clean_grid(self, snakes):
         self.food_flag = True
         for row in self.grid:
             for cell in row:
-                if cell[0] != 1:
-                    if cell[0] == 2:
+                id_val = cell[0]
+                index_val = cell[1]
+                if id_val < 2:
+                    if id_val == 1:
                         self.food_flag = False
                 else:
-                    if cell[1] >= snake.len:
+                    if index_val >= snakes[id_val - 2].len:
                          cell[0] = 0
                          cell[1] = 0
                     else:
                         cell[1] += 1
         
-    def check_col(self, snake: Snake) -> None:
-        col_val = self.grid[snake.pos.y][snake.pos.x][0]
-        match col_val:
-            case 1:
-                self.game_over()
-            case 2:
-                snake.add_len()
+    def check_col(self, snakes) -> None:
+        for snake in snakes:
+            col_val = self.grid[snake.pos.y][snake.pos.x][0]
+            match col_val:
+                case 0:
+                    pass
+                case 1:
+                    snake.add_len()
+                case snake.id:
+                    self.game_over("Self hit!")
+                case _:
+                    self.game_over(f"Hit snake nr.{col_val - 2}")
     
-    def game_over(self):
+    def game_over(self, why) -> None:
         print("Game over!")
+        print("You: " + why)
         self.running = False
         
     
@@ -99,5 +104,5 @@ class Game:
             rand_x = randint(0, self.dimension.x - 1)
             rand_y = randint(0, self.dimension.y - 1)
         
-        self.grid[rand_y][rand_x][0] = 2
+        self.grid[rand_y][rand_x][0] = 1
 

@@ -4,7 +4,7 @@ from pygame.rect import Rect
 import modules.stylesheet as style
 
 class Renderer:
-    def __init__(self, w_width, w_height, grid_size):
+    def __init__(self, w_width, w_height, grid_size) -> None:
         self.w_width = w_width
         self.w_height = w_height
         
@@ -40,12 +40,12 @@ class Renderer:
             x = 0
             for cell in row:
                 match cell[0]:
+                    case 0:
+                        pass
                     case 1:
-                        draw.rect(self.draw_zone, style.SNAKE1, self.rects[y][x])
-                    case 2:
                         draw.rect(self.draw_zone, style.FOOD, self.rects[y][x])
-                    case 3:
-                        draw.rect(self.draw_zone, style.SNAKE2, self.rects[y][x])                    
+                    case _:
+                        draw.rect(self.draw_zone, style.SNAKES[cell[0] - 2], self.rects[y][x])                    
                 x += 1
             y += 1
 

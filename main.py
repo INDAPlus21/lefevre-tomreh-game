@@ -6,8 +6,8 @@ if __name__ == '__main__':
     print("Successfully started application.")
     pygame.init()
     
-    game = Game(10, 10)
+    game = Game(20, 20)
 
-    game.run()
+    game.run(400, 400)
     
     pygame.quit()

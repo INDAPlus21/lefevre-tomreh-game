@@ -3,6 +3,7 @@ from modules.snake import Snake
 import pygame
 import queue
 from random import randint
+from modules.renderer import Renderer
 
 DOWN  = Vec2(0, 1)
 UP    = Vec2(0, -1)
@@ -15,7 +16,7 @@ class Game:
         self.grid = [[[0, 0] for i in range(x)] for j in range(y)]
         self.snake = Snake()
         self.clock = pygame.time.Clock()
-        self.FPS = 3
+        self.FPS = 10
         self.running = True
         self.food_flag = True
         self.input_buffer = queue.Queue(2)
@@ -31,9 +32,10 @@ class Game:
             
         return out
             
-    def run(self) -> None:
+    def run(self, w, h) -> None:
         self.put_snake(self.snake)
-        print(self)
+        # print(self)
+        renderer = Renderer(w, h, (self.dimension.x, self.dimension.y))
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -54,7 +56,7 @@ class Game:
                 self.put_snake(self.snake)
                 self.clean_grid(self.snake)
                 self.spawn_food()
-                print(self)
+                renderer.draw(self.grid)
                 self.clock.tick(self.FPS)
         
     def put_snake(self, snake: Snake) -> None:
@@ -94,10 +96,8 @@ class Game:
         rand_y = randint(0, self.dimension.y - 1)
                 
         while self.grid[rand_y][rand_x][0] != 0:
-            print("run")
             rand_x = randint(0, self.dimension.x - 1)
             rand_y = randint(0, self.dimension.y - 1)
         
-        point = self.grid[rand_y][rand_x]
-        point[0] = 2
+        self.grid[rand_y][rand_x][0] = 2
 

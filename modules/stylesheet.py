@@ -1,0 +1,8 @@
+# Colors
+BACKGROUND = (102, 0, 51)
+BORDER = (55, 51, 50)
+SNAKE1 = (52, 105, 191)
+FOOD = (199, 55, 47)
+
+# Dimensions
+BORDER_THICKNESS = 5

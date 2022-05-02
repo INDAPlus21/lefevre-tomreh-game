@@ -1,10 +1,11 @@
-class Agent:
-    _up = (0, 1)
-    _down = (0, -1)
-    _right = (1, 0)
-    _left = (-1, 0)
+from modules.vec import Vec2
+from modules.consts import *
+class Agent:    
+    def __init__(self, start_pos = Vec2(0, 0), start_dir = DOWN):
+        self.pos = start_pos
+        self.dir = start_dir
+        self.len = 1
+        
     
-    def __init__(self):
-        pass
     def Output(self, state):
         pass

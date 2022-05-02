@@ -31,7 +31,7 @@ class Renderer:
         for row in grid:
             x = 0
             for cell in row:
-                if cell == 1:
+                if cell[0] == 1:
                     draw.rect(self.draw_zone, self.d["c"]["cc"], self.rects[y][x])
                 x += 1
             y += 1

@@ -8,6 +8,6 @@ if __name__ == '__main__':
     print("Successfully started application.")
     pygame.init()
     
-    game = Game((20, 20))
+    game = Game((10, 10))
 
     game.start(Player(0), Player(1))

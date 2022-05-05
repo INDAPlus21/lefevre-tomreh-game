@@ -72,6 +72,7 @@ class Renderer:
             for val_x in range(0, self.w_width, size_x):
                 row.append(Rect(val_x + offset_x, val_y +
                            offset_y, size_x, size_y))
+
             rows.append(row)
 
         return rows

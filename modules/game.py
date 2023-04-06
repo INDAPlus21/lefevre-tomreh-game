@@ -4,6 +4,7 @@ import pygame
 from random import randint
 from modules.renderer import Renderer
 from modules.scenes import Scene
+from modules.bots import BasicBot
 
 DOWN = Vec2(0, 1)
 UP = Vec2(0, -1)
@@ -43,6 +44,7 @@ class Game:
         self.scene_select = Scene(0)
         self.renderer = Renderer(w, h, (self.dimension.x, self.dimension.y))
         self.snakes_used = 1
+        self.bot = BasicBot()
 
 
     def __repr__(self) -> str:
@@ -70,18 +72,25 @@ class Game:
             match self.scene_select:
                 case Scene.MAINMENU:
                     self.scene_select = self.renderer.draw_menu(events)
-                case Scene.SINGLEPLAYER:
-                    self.snakes_used = 1
-                    self.scene_select = self.game(events, self.scene_select)
-                    self.renderer.draw_game(self.grid)
-                case Scene.MULTIPLAYER:
-                    self.snakes_used = 2
-                    self.scene_select = self.game(events, self.scene_select)
-                    self.renderer.draw_game(self.grid)
                 case Scene.GAMEOVER:
                     self.scene_select = self.renderer.draw_end(
                         events, self.loser)
+                case _:
+                    self.snakes_used = 2
+                    if (self.scene_select == Scene.SINGLEPLAYER or self.scene_select == Scene.SINGLEPLAYER_BOT):
+                        self.snakes_used = 1
 
+                    self.bots_used = 0
+                    if (self.scene_select == Scene.SINGLEPLAYER_BOT or self.scene_select == Scene.MULTIPLAYER_BOT):
+                        self.bots_used = 1
+                        self.snakes[0].isBot = True
+                    elif (self.scene_select == Scene.MULTIPLAYER_2BOT):
+                        self.bots_used = 2
+                        self.snakes[0].isBot, self.snakes[1].isBot = True, True
+
+                    self.scene_select = self.game(events, self.scene_select)
+                    self.renderer.draw_game(self.grid)
+                
 
     def add_snake(self):
         """
@@ -100,7 +109,7 @@ class Game:
             state: The current scene state
             
         Returns:
-            bool: Next game state
+            Scene: Next game state
         """
         # Handle events
         for event in events:
@@ -123,8 +132,20 @@ class Game:
 
         # Prepare for next frame
         if gameRunningFlag:
+            # Run bot moves
+            for i in range(self.bots_used):
+                new_dir = self.bot.getMove(self.snakes[i], self.grid)
+                # Check if move is legal
+                print("old: " + self.snakes[i].dir.__repr__())
+                print("new: " + new_dir.__repr__())
+                print("inv: " + (Vec2(-1, -1) * new_dir).__repr__())
+                print("eq: " + (self.snakes[i].dir != Vec2(-1, -1) * new_dir).__repr__())
+                if (self.snakes[i].dir != Vec2(-1, -1) * new_dir):
+                    self.snakes[i].dir = new_dir
+
             # Cleaning grid from old snake positions and check if more food needs to be spawned
             self.clean_grid(self.snakes)
+
             # Check the next positions for the snakes
             if self.put_snakes(self.snakes[0:self.snakes_used]):
                 # Spawn food

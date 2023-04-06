@@ -53,6 +53,7 @@ class Button:
         self.hover = hover
         self.color = color
 
+
     def is_hover(self):
         """
         If the mouse position is currently over the button
@@ -61,6 +62,7 @@ class Button:
             bool: True if cursor is currently over the button, False otherwise.
         """
         return self.rect.collidepoint(pygame.mouse.get_pos())
+
 
     def draw(self, surface):
         """

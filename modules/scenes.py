@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import IntEnum
 
-class Scene(Enum):
+class Scene(IntEnum):
     MAINMENU = 0
     SINGLEPLAYER = 1
     SINGLEPLAYER_BOT = 2
@@ -8,3 +8,4 @@ class Scene(Enum):
     MULTIPLAYER_BOT = 4
     MULTIPLAYER_2BOT = 5
     GAMEOVER = 6
+    SELECTBOT = 7

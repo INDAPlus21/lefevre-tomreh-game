@@ -20,6 +20,8 @@ class Snake:
         self.pos = Vec2(randint(0, 5), randint(0, 5))
         self.len = 0
         self.dir = Vec2(0, 1)
+        self.isBot = False
+        self.score = 0
 
         # Check if id is positive integer
         if id < 0:
@@ -40,20 +42,22 @@ class Snake:
         """
         # If the event flag is False, check the type of the event
         if not self.event_flag:
-            # Match the key of the event with the corresponding case and update the direction of the snake accordingly
-            match event.key:
-                case self.scheme.down:
-                    if self.dir != Vec2(0, -1):
-                        self.dir = Vec2(0,  1)
-                case self.scheme.up:
-                    if self.dir != Vec2(0,  1):
-                        self.dir = Vec2(0, -1)
-                case self.scheme.right:
-                    if self.dir != Vec2(-1, 0):
-                        self.dir = Vec2(1,  0)
-                case self.scheme.left:
-                    if self.dir != Vec2(1,  0):
-                        self.dir = Vec2(-1,  0)
+            # Prohibit player input if snake is bot
+            if (not self.isBot):
+                # Match the key of the event with the corresponding case and update the direction of the snake accordingly
+                match event.key:
+                    case self.scheme.down:
+                        if self.dir != Vec2(0, -1):
+                            self.dir = Vec2(0,  1)
+                    case self.scheme.up:
+                        if self.dir != Vec2(0,  1):
+                            self.dir = Vec2(0, -1)
+                    case self.scheme.right:
+                        if self.dir != Vec2(-1, 0):
+                            self.dir = Vec2(1,  0)
+                    case self.scheme.left:
+                        if self.dir != Vec2(1,  0):
+                            self.dir = Vec2(-1,  0)
         else:
             # If the event flag is True, put the event in the buffer if it is not full
             if not self.buffer.full():
@@ -74,20 +78,23 @@ class Snake:
         Args:
             event: The event to be handled.
         """
-        # Match the key of the event with the corresponding case and update the direction of the snake accordingly
-        match event.key:
-            case self.scheme.down:
-                if self.dir != Vec2(0, -1):
-                    self.dir = Vec2(0,  1)
-            case self.scheme.up:
-                if self.dir != Vec2(0,  1):
-                    self.dir = Vec2(0, -1)
-            case self.scheme.right:
-                if self.dir != Vec2(-1, 0):
-                    self.dir = Vec2(1,  0)
-            case self.scheme.left:
-                if self.dir != Vec2(1,  0):
-                    self.dir = Vec2(-1,  0)
+        
+        # Prohibit player input if snake is a bot
+        if(not self.isBot):
+            # Match the key of the event with the corresponding case and update the direction of the snake accordingly
+            match event.key:
+                case self.scheme.down:
+                    if self.dir != Vec2(0, -1):
+                        self.dir = Vec2(0,  1)
+                case self.scheme.up:
+                    if self.dir != Vec2(0,  1):
+                        self.dir = Vec2(0, -1)
+                case self.scheme.right:
+                    if self.dir != Vec2(-1, 0):
+                        self.dir = Vec2(1,  0)
+                case self.scheme.left:
+                    if self.dir != Vec2(1,  0):
+                        self.dir = Vec2(-1,  0)
 
 
     def update(self, x, y) -> bool:
@@ -121,6 +128,10 @@ class Snake:
 
     def add_len(self) -> None:
         """
-        Adds one length to the snake
+        Adds one length and score to the snake.
         """
         self.len += 1
+        self.score += 1
+
+        color = ["BLUE", "RED"]
+        print(color[self.id - 2], "scored!")

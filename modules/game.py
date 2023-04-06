@@ -3,6 +3,7 @@ from modules.snake import Snake
 import pygame
 from random import randint
 from modules.renderer import Renderer
+from modules.scenes import Scene
 
 DOWN = Vec2(0, 1)
 UP = Vec2(0, -1)
@@ -19,7 +20,7 @@ class Game:
         self.FPS = 10
         self.running = True
         self.food_flag = True
-        self.scene_select = 0
+        self.scene_select = Scene(0)
         self.renderer = Renderer(w, h, (self.dimension.x, self.dimension.y))
         self.snakes_used = 1
 
@@ -37,17 +38,17 @@ class Game:
         while self.running:
             events = pygame.event.get()
             match self.scene_select:
-                case 0:
+                case Scene.MAINMENU:
                     self.scene_select = self.renderer.draw_menu(events)
-                case 1:
+                case Scene.SINGLEPLAYER:
                     self.snakes_used = 1
                     self.scene_select = self.game(events, self.scene_select)
                     self.renderer.draw_game(self.grid)
-                case 2:
+                case Scene.MULTIPLAYER:
                     self.snakes_used = 2
                     self.scene_select = self.game(events, self.scene_select)
                     self.renderer.draw_game(self.grid)
-                case 3:
+                case Scene.GAMEOVER:
                     self.scene_select = self.renderer.draw_end(
                         events, self.loser)
 
@@ -71,7 +72,7 @@ class Game:
         for snake in self.snakes[0:self.snakes_used]:
             if not snake.update(self.dimension.x, self.dimension.y):
                 self.game_over(snake.id - 2)
-                state = 3
+                state = Scene.GAMEOVER
                 flag = False
 
         if flag:
@@ -81,7 +82,7 @@ class Game:
                 self.renderer.draw_game(self.grid)
                 self.clock.tick(self.FPS)
             else:
-                state = 3
+                state = Scene.GAMEOVER
 
         return state
 

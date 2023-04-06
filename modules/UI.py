@@ -1,6 +1,7 @@
 import pygame
 import pygame.freetype
 import sys
+from modules.scenes import Scene
 
 pygame.freetype.init()
 FONT = pygame.freetype.Font('assets/Minecraft.ttf', 32)
@@ -48,7 +49,7 @@ class MainMenu:
 
     def run(self, surface, events):
         click_flag = False
-        state = 0
+        state = Scene.MAINMENU
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -64,9 +65,9 @@ class MainMenu:
 
         if click_flag:
             if self.singlebutton.is_hover():
-                state = 1
+                state = Scene.SINGLEPLAYER
             elif self.doublebutton.is_hover():
-                state = 2
+                state = Scene.MULTIPLAYER
 
         pygame.display.flip()
 
@@ -80,7 +81,7 @@ class EndScreen:
 
     def run(self, surface, events, loser):
         click_flag = False
-        state = 3
+        state = Scene.GAMEOVER
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -106,7 +107,7 @@ class EndScreen:
         text.draw(surface)
 
         if click_flag and self.play_again.is_hover():
-            state = 0
+            state = Scene.MAINMENU
 
         pygame.display.flip()
 

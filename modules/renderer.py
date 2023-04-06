@@ -7,6 +7,14 @@ from modules.UI import UI
 
 class Renderer:
     def __init__(self, w_width, w_height, grid_size) -> None:
+        """
+        Initialize game renderer.
+        
+        Args:
+            w_width: window width.
+            w_height: window height.
+            grid_size: size of grid.
+        """
         self.w_width = w_width
         self.w_height = w_height
 
@@ -36,19 +44,28 @@ class Renderer:
         self.ui = UI(self.draw_zone)
 
     def draw_game(self, grid):
-        # Background color
+        """
+        Draw game scene.
+        
+        Args:
+            grid: game grid.
+        """
+        # Fill background color
         self.draw_zone.fill(style.BACKGROUND)
 
         x, y = 0, 0
-
+        # Iterate through grid
         for row in grid:
             x = 0
             for cell in row:
                 match cell[0]:
+                    # Draw empty
                     case 0:
                         pass
+                    # Draw food
                     case 1:
                         draw.rect(self.draw_zone, style.FOOD, self.rects[y][x])
+                    # Draw snake
                     case _:
                         draw.rect(self.draw_zone,
                                   style.SNAKES[cell[0] - 2], self.rects[y][x])
@@ -59,6 +76,12 @@ class Renderer:
         display.flip()
 
     def gen_rects(self, size):
+        """
+        Generate a grid of rectangles.
+        
+        Args:
+            size: tuple consisting of window (width, height).
+        """
         x, y = size
         size_x = self.w_width // x
         size_y = self.w_height // y
@@ -78,7 +101,20 @@ class Renderer:
         return rows
 
     def draw_menu(self, events):
+        """
+        Draw game menu.
+        
+        Args:
+            events: list of events.
+        """
         return self.ui.menu.run(self.draw_zone, events)
 
     def draw_end(self, events, loser):
+        """
+        Draw game over screen.
+        
+        Args:
+            events: list of events.
+            loser: loser of previous game.
+        """
         return self.ui.end.run(self.draw_zone, events, loser)

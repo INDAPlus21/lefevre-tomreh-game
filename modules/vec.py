@@ -24,6 +24,21 @@ class Vec2:
         y = self.y + other.y
         
         return Vec2(x, y)
+    
+    def __mul__(self, other):
+        """
+        Multiplies a Vec2 class by a another Vec2.
+        
+        Args:
+            other: a Vec2.
+
+        Returns:
+            Vec2: instance with the values multiplied together.
+        """
+        x = self.x * other.x
+        y = self.y * other.y
+        
+        return Vec2(x, y)
         
     def __repr__(self):
         """

@@ -44,8 +44,11 @@ class MainMenu:
     def __init__(self, surface) -> None:
         x, y = surface.get_size()
         self.snake_text = Text("PvSnake", (x//2, y//4), WHITE)
-        self.singlebutton = Button("1 Player", (x//4, y//1.5), BLUE)
-        self.doublebutton = Button("2 Player", (3*x//4, y//1.5), RED)
+        self.buttonPlayer = Button("1 Player", (x//4, y//1.7), BLUE)
+        self.buttonBot = Button("1 Bot", (3*x//4, y//1.7), BLUE)
+        self.buttonPlayerVSPlayer = Button("PvP", (0.5*x//6, y//1.3), RED)
+        self.buttonPlayerVSBot = Button("PvBot", (2.5*x//6, y//1.3), RED)
+        self.buttonBotVSBot = Button("BotvBot", (5*x//6, y//1.3), RED)
 
     def run(self, surface, events):
         click_flag = False
@@ -60,14 +63,23 @@ class MainMenu:
 
         surface.fill((0, 0, 0))
         self.snake_text.draw(surface)
-        self.singlebutton.draw(surface)
-        self.doublebutton.draw(surface)
+        self.buttonPlayer.draw(surface)
+        self.buttonBot.draw(surface)
+        self.buttonPlayerVSPlayer.draw(surface)
+        self.buttonPlayerVSBot.draw(surface)
+        self.buttonBotVSBot.draw(surface)
 
         if click_flag:
-            if self.singlebutton.is_hover():
+            if self.buttonPlayer.is_hover():
                 state = Scene.SINGLEPLAYER
-            elif self.doublebutton.is_hover():
+            elif self.buttonBot.is_hover():
+                state = Scene.SINGLEPLAYER_BOT
+            elif self.buttonPlayerVSPlayer.is_hover():
                 state = Scene.MULTIPLAYER
+            elif self.buttonPlayerVSBot.is_hover():
+                state = Scene.MULTIPLAYER_BOT
+            elif self.buttonBotVSBot.is_hover():
+                state = Scene.MULTIPLAYER_2BOT
 
         pygame.display.flip()
 
